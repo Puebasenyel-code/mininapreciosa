@@ -279,7 +279,7 @@
             <button class="tab-btn" onclick="switchTab(event, 'reasons')">19 Razones ✨</button>
         </nav>
 
-        <!-- Pestaña 1: Galaxia 3D con Spider-Man y Hello Kitty -->
+        <!-- Pestaña 1: Galaxia 3D con Mensajes Flotantes y Spider-Man & Hello Kitty -->
         <div id="galaxy" class="section active">
             <canvas id="galaxy-canvas"></canvas>
             
@@ -296,7 +296,7 @@
             </div>
         </div>
 
-        <!-- Pestaña 2: Tu Mensaje Detallista Ampliado -->
+        <!-- Pestaña 2: Tu Mensaje Detallista -->
         <div id="message" class="section">
             <div class="message-card">
                 <h2>Para la dueña de mi corazón</h2>
@@ -307,7 +307,7 @@
                     Todos los días quiero despertar y saber que estás conmigo. Me hace feliz saber, mi amor, que a pesar de todo lo que hemos pasado o ha pasado, hemos podido construir una confianza y un nivel de complicidad único que me encanta, y me encantaría poder seguir viviendo eso contigo por mucho tiempo más.
                 </p>
                 <p>
-                    En este día tan especial quiero que sepas que me da mucho gusto, mi amor bonito, que seas mi novia. También quiero que sigues cumpliendo muchos años más al lado mío y de tu familia, brillando con esa luz tan hermosa que te caracteriza mientras te esfuerzas por tu carrera.
+                    En este día tan especial quiero que sepas que me da mucho gusto, mi amor bonito, que seas mi novia. También quiero que sigas cumpliendo muchos años más al lado mío y de tu familia, brillando con esa luz tan hermosa que te caracteriza mientras te esfuerzas por tu carrera.
                 </p>
                 <p>
                     Quiero que en realidad, mi amor, lo nuestro se dé bonito. Haré lo posible para ir a verte y poder compartir contigo, apreciarte mi niña bonita de cerca; no pararía de mirarte. Quiero que sepas que se me hace mucha ilusión verte y hablar contigo.
@@ -390,6 +390,7 @@
             }, 200);
         }
 
+        // Galaxia 3D con Partículas y Mensajitos de Amor Flotantes
         function initGalaxy() {
             const canvas = document.getElementById('galaxy-canvas');
             const ctx = canvas.getContext('2d');
@@ -402,7 +403,7 @@
             resize();
 
             let particles = [];
-            const numParticles = 400;
+            const numParticles = 300;
 
             for (let i = 0; i < numParticles; i++) {
                 particles.push({
@@ -414,15 +415,34 @@
                 });
             }
 
+            // Frases de amor en 3D que se mezclan con la galaxia
+            const lovePhrases = [
+                "Te Amo ❤️", "My Love ✨", "Eres preciosa 🌸", 
+                "Me encantas 😍", "Amor de mi vida 💫", "Niña bonita 💖", 
+                "19 Años 🎉", "Siempre tú 🌟", "Mi universito 🌌", "Te adoro preciosa 💕"
+            ];
+
+            let floatingTexts = [];
+            for (let i = 0; i < lovePhrases.length; i++) {
+                floatingTexts.push({
+                    text: lovePhrases[i],
+                    x: (Math.random() - 0.5) * (canvas.width * 0.8),
+                    y: (Math.random() - 0.5) * (canvas.height * 0.8),
+                    z: Math.random() * canvas.width,
+                    size: Math.floor(Math.random() * 4) + 14
+                });
+            }
+
             function animate() {
-                ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.25)';
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
 
                 let cx = canvas.width / 2;
                 let cy = canvas.height / 2;
 
+                // Dibujar estrellas de la galaxia
                 particles.forEach(p => {
-                    p.z -= 1.5;
+                    p.z -= 1.2;
                     if (p.z <= 0) p.z = canvas.width;
 
                     let k = 250 / p.z;
@@ -435,6 +455,31 @@
                         ctx.beginPath();
                         ctx.arc(px, py, pSize, 0, Math.PI * 2);
                         ctx.fill();
+                    }
+                });
+
+                // Dibujar y mover los mensajitos de amor en 3D
+                ctx.font = '600 15px Poppins, sans-serif';
+                ctx.textAlign = 'center';
+
+                floatingTexts.forEach(ft => {
+                    ft.z -= 1.0; // Movimiento en profundidad hacia la pantalla
+                    if (ft.z <= 0) ft.z = canvas.width;
+
+                    let k = 250 / ft.z;
+                    let px = ft.x * k + cx;
+                    let py = ft.y * k + cy;
+
+                    if (px >= 0 && px <= canvas.width && py >= 0 && py <= canvas.height) {
+                        let fontSize = Math.max(10, ft.size * k);
+                        ctx.font = `600 ${fontSize}px Poppins, sans-serif`;
+                        
+                        // Efecto de brillo rosado en los textos
+                        ctx.fillStyle = '#ffb6c1';
+                        ctx.shadowColor = '#ff1493';
+                        ctx.shadowBlur = 10;
+                        ctx.fillText(ft.text, px, py);
+                        ctx.shadowBlur = 0; // Limpiar sombra para optimizar
                     }
                 });
 
